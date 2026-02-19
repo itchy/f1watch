@@ -64,23 +64,6 @@ def event_name(name: str) -> str:
     return EVENT_NAME_MAP.get(stripped, stripped)
 
 
-def practice_events(year: int):
-    return [
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-11T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-11T13:00:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-12T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-12T13:00:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-13T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-13T13:00:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-18T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-18T13:00:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-19T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-19T13:00:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-20T09:30:00-00:00"},
-        {"event": "Sakhir", "session": "Winter", "start": f"{year}-02-20T13:00:00-00:00"},
-    ]
-
-
 def get_f1_event_details(year: int, url: str):
     event = event_name(url.split("/")[-1].replace("-", " ").title())
     response = requests.get(f"https://www.formula1.com{url}", timeout=20)
@@ -113,7 +96,6 @@ def get_f1_event_details(year: int, url: str):
 
 def get_f1_schedule(year: int):
     events = []
-    events.extend(practice_events(year))
 
     response = requests.get(f"https://www.formula1.com/en/racing/{year}", timeout=20)
     response.raise_for_status()
