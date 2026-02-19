@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "$REPO_ROOT"
+
 usage() {
   cat <<'USAGE'
 Usage:
@@ -75,8 +79,8 @@ if [[ -z "$BUCKET" ]]; then
   exit 1
 fi
 
-if ! command -v jupyter >/dev/null 2>&1; then
-  echo "Missing required command: jupyter" >&2
+if ! command -v python >/dev/null 2>&1; then
+  echo "Missing required command: python" >&2
   exit 1
 fi
 
@@ -90,24 +94,28 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
-NOTEBOOKS=("_drivers.ipynb" "_teams.ipynb" "_schedules.ipynb")
+SCRAPER_MODULES=(
+  "f1watch.scrapers.drivers"
+  "f1watch.scrapers.teams"
+  "f1watch.scrapers.schedule"
+)
 OUTPUT_FILES=(
   "${YEAR}_drivers.json"
   "${YEAR}_teams.json"
   "${YEAR}_schedule.json"
 )
 
-TMP_DIR="$(mktemp -d)"
-trap 'rm -rf "$TMP_DIR"' EXIT
+if [[ ! -d "src/f1watch" ]]; then
+  echo "Expected package path missing: src/f1watch" >&2
+  exit 1
+fi
 
-for nb in "${NOTEBOOKS[@]}"; do
-  if [[ ! -f "$nb" ]]; then
-    echo "Notebook not found: $nb" >&2
+for module in "${SCRAPER_MODULES[@]}"; do
+  echo "Executing ${module}"
+  if ! PYTHONPATH="src${PYTHONPATH:+:$PYTHONPATH}" python -m "$module" --year "$YEAR" --output-dir "."; then
+    echo "Failed while running scraper module: ${module}" >&2
     exit 1
   fi
-  echo "Executing $nb"
-  jupyter nbconvert --to notebook --execute "$nb" --output-dir "$TMP_DIR" --output "executed-$(basename "$nb")" >/dev/null
-
 done
 
 for file in "${OUTPUT_FILES[@]}"; do
