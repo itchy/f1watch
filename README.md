@@ -1,112 +1,53 @@
-# f1
+# f1watch
 
-Utilities and notebook workflows for generating Formula 1 datasets used by widgets/scripts.
+Fun side project for generating F1 data and serving a compact "next event" payload for watch widgets.
 
-## What this repo contains
+## Architecture (4 elements)
 
-- `2026_schedule.json`: Session-level schedule data (`event`, `session`, `start`).
-- `2026_teams.json`: Constructor standings snapshot.
-- `2026_drivers.json`: Driver standings snapshot plus `car_number`.
-- `next.ipynb`: Produces one JSON object describing the next session plus team/driver ranking keys.
-- `_schedules.ipynb`: Scrapes schedule/session details from Formula1.com and writes `<year>_schedule.json`.
-- `_teams.ipynb`: Scrapes team standings and writes `<year>_teams.json`.
-- `_drivers.ipynb`: Scrapes driver standings, resolves car numbers, and writes `<year>_drivers.json`.
-- `data/`: Historical snapshots for 2025.
+1. Drivers scraper: `/Users/scott/code/f1/src/f1watch/scrapers/drivers.py`
+2. Teams scraper: `/Users/scott/code/f1/src/f1watch/scrapers/teams.py`
+3. Schedule scraper: `/Users/scott/code/f1/src/f1watch/scrapers/schedule.py`
+4. API/Lambda reader: `/Users/scott/code/f1/src/f1watch/api/lambda_handler.py`
+
+AWS Lambda entrypoint shim:
+
+- `/Users/scott/code/f1/lambda_function.py` (exports `lambda_handler`)
+
+Legacy notebooks are still in the repo, but scripts are now the primary path.
 
 ## Requirements
 
-Python 3.10+ is recommended.
+Python 3.10+.
 
 Install dependencies:
 
 ```bash
-pip install requests beautifulsoup4 boto3
+pip install -r /Users/scott/code/f1/requirements.txt
 ```
 
-Notes:
-- `boto3` is only needed if you switch `next.ipynb` from local files to S3 reads.
+## Data outputs
 
-## How to regenerate data
+Generated files:
 
-1. Open `_drivers.ipynb`, `_teams.ipynb`, and `_schedules.ipynb`.
-2. Set `year` in each notebook.
-3. Run each notebook end-to-end.
-4. Confirm files were generated:
+- `<year>_drivers.json`
+- `<year>_teams.json`
+- `<year>_schedule.json`
+
+## Run scrapers manually
+
+From repo root:
 
 ```bash
-ls -1 *_drivers.json *_teams.json *_schedule.json
+PYTHONPATH=src python -m f1watch.scrapers.drivers --year 2026
+PYTHONPATH=src python -m f1watch.scrapers.teams --year 2026
+PYTHONPATH=src python -m f1watch.scrapers.schedule --year 2026
 ```
 
-## Data format
+## Scrape + upload to S3
 
-### Drivers (`<year>_drivers.json`)
+Use:
 
-```json
-{
-  "first_name": "Lando",
-  "last_name": "Norris",
-  "place": "1",
-  "points": "423",
-  "car_number": "4"
-}
-```
-
-### Teams (`<year>_teams.json`)
-
-```json
-{
-  "team_name": "McLaren",
-  "place": "1",
-  "points": "833"
-}
-```
-
-### Schedule (`<year>_schedule.json`)
-
-```json
-{
-  "event": "Melbourne",
-  "session": "Grand Prix",
-  "start": "2026-03-07T13:00:00-00:00"
-}
-```
-
-## Running `next.ipynb`
-
-`next.ipynb` expects these files in the repo root:
-
-- `<year>_schedule.json`
-- `<year>_teams.json`
-- `<year>_drivers.json`
-
-The output is a single JSON object for the next upcoming session, augmented with:
-
-- Team rank keys (lowercased team names)
-- Driver rank keys (initials + car number, e.g. `ln4`)
-- Time helpers (`dow`, `dom`, `delta`)
-
-## Lambda / S3 configuration
-
-`next.ipynb` supports loading input JSON from S3 (for Lambda) or local files (for development).
-
-Environment variables:
-
-- `F1_YEAR` (default: `2026`)
-- `DATA_SOURCE`:
-  - `s3`: force S3 reads
-  - `local`: force local file reads
-  - `auto` (default): use S3 when `DATA_BUCKET` is set, else local
-- `DATA_BUCKET`: S3 bucket name (required when `DATA_SOURCE=s3`)
-
-Expected S3 object keys:
-
-- `<F1_YEAR>_schedule.json`
-- `<F1_YEAR>_teams.json`
-- `<F1_YEAR>_drivers.json`
-
-## Scrape + upload script
-
-Use `/Users/scott/code/f1/scripts/scrape_and_upload.sh` to execute all scraping notebooks and upload refreshed data files to S3.
+- `/Users/scott/code/f1/scripts/scrape_and_upload.sh`
 
 Example:
 
@@ -114,20 +55,38 @@ Example:
 DATA_BUCKET=f1-data-00000000 F1_YEAR=2026 /Users/scott/code/f1/scripts/scrape_and_upload.sh
 ```
 
-With optional prefix and dry run:
+Dry run:
 
 ```bash
-/Users/scott/code/f1/scripts/scrape_and_upload.sh --bucket f1-data-00000000 --year 2026 --prefix data --dry-run
+/Users/scott/code/f1/scripts/scrape_and_upload.sh --bucket f1-data-00000000 --year 2026 --dry-run
 ```
 
-## Known fragility / caveats
+## Lambda/API behavior
 
-- Formula1.com HTML/CSS class names are scraped directly. If the site markup changes, notebook parsing may break.
-- `next.ipynb` assumes schedule timestamps match `%Y-%m-%dT%H:%M:%S%z` exactly.
-- Schedule ordering is assumed chronological when determining the next session.
+`lambda_handler` loads the 3 JSON files from S3 or local, computes the next session, and returns one JSON payload.
 
-## Suggested maintenance
+Environment variables:
 
-- Add validation for timestamp format before writing schedule output.
-- Add graceful error handling when scraping selectors are missing.
-- Move notebook logic into versioned Python scripts for easier testing/automation.
+- `F1_YEAR` default `2026`
+- `DATA_SOURCE` values: `s3`, `local`, `auto` (default)
+- `DATA_BUCKET` required if `DATA_SOURCE=s3`
+- `LOCAL_TZ_OFFSET_HOURS` default `-7`
+
+Expected S3 keys:
+
+- `<F1_YEAR>_drivers.json`
+- `<F1_YEAR>_teams.json`
+- `<F1_YEAR>_schedule.json`
+
+## Tests
+
+Run:
+
+```bash
+python -m unittest discover -s /Users/scott/code/f1/tests -p 'test_*.py'
+```
+
+## Notes
+
+- Scraping is dependent on Formula1.com page markup and can break if selectors/classes change.
+- If no future session is available, the API returns `{"error":"No upcoming session found"}`.
