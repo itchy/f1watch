@@ -1,5 +1,10 @@
 [
     {
+        "event": "Pre Season Testing 1",
+        "session": "Chequered Flag",
+        "start": "2026-02-11T07:00:00-00:00"
+    },
+    {
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-11T09:30:00-00:00"
@@ -8,6 +13,11 @@
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-11T13:00:00-00:00"
+    },
+    {
+        "event": "Pre Season Testing 1",
+        "session": "Chequered Flag",
+        "start": "2026-02-12T07:00:00-00:00"
     },
     {
         "event": "Sakhir",
@@ -20,6 +30,11 @@
         "start": "2026-02-12T13:00:00-00:00"
     },
     {
+        "event": "Pre Season Testing 1",
+        "session": "Chequered Flag",
+        "start": "2026-02-13T07:00:00-00:00"
+    },
+    {
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-13T09:30:00-00:00"
@@ -28,6 +43,11 @@
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-13T13:00:00-00:00"
+    },
+    {
+        "event": "Pre Season Testing 2",
+        "session": "Chequered Flag",
+        "start": "2026-02-18T07:00:00-00:00"
     },
     {
         "event": "Sakhir",
@@ -40,6 +60,11 @@
         "start": "2026-02-18T13:00:00-00:00"
     },
     {
+        "event": "Pre Season Testing 2",
+        "session": "Day 2",
+        "start": "2026-02-19T07:00:00-00:00"
+    },
+    {
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-19T09:30:00-00:00"
@@ -50,6 +75,11 @@
         "start": "2026-02-19T13:00:00-00:00"
     },
     {
+        "event": "Pre Season Testing 2",
+        "session": "Day 3",
+        "start": "2026-02-20T07:00:00-00:00"
+    },
+    {
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-20T09:30:00-00:00"
@@ -58,31 +88,6 @@
         "event": "Sakhir",
         "session": "Winter",
         "start": "2026-02-20T13:00:00-00:00"
-    },
-    {
-        "event": "Melbourne",
-        "session": "FP1",
-        "start": "2026-03-05T09:30:00-00:00"
-    },
-    {
-        "event": "Melbourne",
-        "session": "FP2",
-        "start": "2026-03-05T13:00:00-00:00"
-    },
-    {
-        "event": "Melbourne",
-        "session": "FP3",
-        "start": "2026-03-06T10:30:00-00:00"
-    },
-    {
-        "event": "Melbourne",
-        "session": "Q",
-        "start": "2026-03-06T14:00:00-00:00"
-    },
-    {
-        "event": "Melbourne",
-        "session": "Grand Prix",
-        "start": "2026-03-07T13:00:00-00:00"
     },
     {
         "event": "Melbourne",
