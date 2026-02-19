@@ -4,6 +4,11 @@ from datetime import datetime, timedelta, timezone
 
 import boto3
 
+EVENT_NAME_MAP = {
+    "Pre Season Testing 1": "Sakhir",
+    "Pre Season Testing 2": "Sakhir",
+}
+
 
 def _parse_start(value: str):
     try:
@@ -81,6 +86,7 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     for start, session in parsed_sessions:
         if now - timedelta(hours=2) < start:
             chosen = dict(session)
+            chosen["event"] = EVENT_NAME_MAP.get(chosen.get("event"), chosen.get("event"))
             chosen_start = start
             break
 

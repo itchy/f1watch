@@ -17,6 +17,8 @@ SESSION_ABR = {
 }
 
 EVENT_NAME_MAP = {
+    "Pre Season Testing 1": "Sakhir",
+    "Pre Season Testing 2": "Sakhir",
     "Australia": "Melbourne",
     "China": "Shanghai",
     "Japan": "Suzuka",
