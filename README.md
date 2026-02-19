@@ -13,7 +13,7 @@ AWS Lambda entrypoint shim:
 
 - `/Users/scott/code/f1/lambda_function.py` (exports `lambda_handler`)
 
-Legacy notebooks are still in the repo, but scripts are now the primary path.
+Legacy notebooks are preserved in `/Users/scott/code/f1/archive/`, but scripts are now the primary path.
 
 ## Requirements
 
