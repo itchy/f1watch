@@ -1,0 +1,128 @@
+[
+    {
+        "first_name": "Lando",
+        "last_name": "Norris",
+        "place": "1",
+        "points": "423"
+    },
+    {
+        "first_name": "Max",
+        "last_name": "Verstappen",
+        "place": "2",
+        "points": "421"
+    },
+    {
+        "first_name": "Oscar",
+        "last_name": "Piastri",
+        "place": "3",
+        "points": "410"
+    },
+    {
+        "first_name": "George",
+        "last_name": "Russell",
+        "place": "4",
+        "points": "319"
+    },
+    {
+        "first_name": "Charles",
+        "last_name": "Leclerc",
+        "place": "5",
+        "points": "242"
+    },
+    {
+        "first_name": "Lewis",
+        "last_name": "Hamilton",
+        "place": "6",
+        "points": "156"
+    },
+    {
+        "first_name": "Kimi",
+        "last_name": "Antonelli",
+        "place": "7",
+        "points": "150"
+    },
+    {
+        "first_name": "Alexander",
+        "last_name": "Albon",
+        "place": "8",
+        "points": "73"
+    },
+    {
+        "first_name": "Carlos",
+        "last_name": "Sainz",
+        "place": "9",
+        "points": "64"
+    },
+    {
+        "first_name": "Fernando",
+        "last_name": "Alonso",
+        "place": "10",
+        "points": "56"
+    },
+    {
+        "first_name": "Nico",
+        "last_name": "Hulkenberg",
+        "place": "11",
+        "points": "51"
+    },
+    {
+        "first_name": "Isack",
+        "last_name": "Hadjar",
+        "place": "12",
+        "points": "51"
+    },
+    {
+        "first_name": "Oliver",
+        "last_name": "Bearman",
+        "place": "13",
+        "points": "41"
+    },
+    {
+        "first_name": "Liam",
+        "last_name": "Lawson",
+        "place": "14",
+        "points": "38"
+    },
+    {
+        "first_name": "Esteban",
+        "last_name": "Ocon",
+        "place": "15",
+        "points": "38"
+    },
+    {
+        "first_name": "Lance",
+        "last_name": "Stroll",
+        "place": "16",
+        "points": "33"
+    },
+    {
+        "first_name": "Yuki",
+        "last_name": "Tsunoda",
+        "place": "17",
+        "points": "33"
+    },
+    {
+        "first_name": "Pierre",
+        "last_name": "Gasly",
+        "place": "18",
+        "points": "22"
+    },
+    {
+        "first_name": "Gabriel",
+        "last_name": "Bortoleto",
+        "place": "19",
+        "points": "19"
+    },
+    {
+        "first_name": "Franco",
+        "last_name": "Colapinto",
+        "place": "20",
+        "points": "0"
+    },
+    {
+        "first_name": "Jack",
+        "last_name": "Doohan",
+        "place": "21",
+        "points": "0"
+    }
+]

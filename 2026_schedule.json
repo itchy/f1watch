@@ -1,0 +1,687 @@
+[
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-11T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-11T13:00:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-12T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-12T13:00:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-13T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-13T13:00:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-18T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-18T13:00:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-19T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-19T13:00:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-20T09:30:00-00:00"
+    },
+    {
+        "event": "Sakhir",
+        "session": "Winter",
+        "start": "2026-02-20T13:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP1",
+        "start": "2026-03-05T09:30:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP2",
+        "start": "2026-03-05T13:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP3",
+        "start": "2026-03-06T10:30:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "Q",
+        "start": "2026-03-06T14:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "Grand Prix",
+        "start": "2026-03-07T13:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP1",
+        "start": "2026-03-06T01:30:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP2",
+        "start": "2026-03-06T05:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "FP3",
+        "start": "2026-03-07T01:30:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "Q",
+        "start": "2026-03-07T05:00:00-00:00"
+    },
+    {
+        "event": "Melbourne",
+        "session": "Grand Prix",
+        "start": "2026-03-08T04:00:00-00:00"
+    },
+    {
+        "event": "Shanghai",
+        "session": "FP1",
+        "start": "2026-03-13T03:30:00-00:00"
+    },
+    {
+        "event": "Shanghai",
+        "session": "SQ",
+        "start": "2026-03-13T07:30:00-00:00"
+    },
+    {
+        "event": "Shanghai",
+        "session": "Sprint",
+        "start": "2026-03-14T03:00:00-00:00"
+    },
+    {
+        "event": "Shanghai",
+        "session": "Q",
+        "start": "2026-03-14T07:00:00-00:00"
+    },
+    {
+        "event": "Shanghai",
+        "session": "Grand Prix",
+        "start": "2026-03-15T07:00:00-00:00"
+    },
+    {
+        "event": "Suzuka",
+        "session": "FP1",
+        "start": "2026-03-27T02:30:00-00:00"
+    },
+    {
+        "event": "Suzuka",
+        "session": "FP2",
+        "start": "2026-03-27T06:00:00-00:00"
+    },
+    {
+        "event": "Suzuka",
+        "session": "FP3",
+        "start": "2026-03-28T02:30:00-00:00"
+    },
+    {
+        "event": "Suzuka",
+        "session": "Q",
+        "start": "2026-03-28T06:00:00-00:00"
+    },
+    {
+        "event": "Suzuka",
+        "session": "Grand Prix",
+        "start": "2026-03-29T05:00:00-00:00"
+    },
+    {
+        "event": "Bahrain",
+        "session": "FP1",
+        "start": "2026-04-10T11:30:00-00:00"
+    },
+    {
+        "event": "Bahrain",
+        "session": "FP2",
+        "start": "2026-04-10T15:00:00-00:00"
+    },
+    {
+        "event": "Bahrain",
+        "session": "FP3",
+        "start": "2026-04-11T12:30:00-00:00"
+    },
+    {
+        "event": "Bahrain",
+        "session": "Q",
+        "start": "2026-04-11T16:00:00-00:00"
+    },
+    {
+        "event": "Bahrain",
+        "session": "Grand Prix",
+        "start": "2026-04-12T15:00:00-00:00"
+    },
+    {
+        "event": "Jeddah",
+        "session": "FP1",
+        "start": "2026-04-17T13:30:00-00:00"
+    },
+    {
+        "event": "Jeddah",
+        "session": "FP2",
+        "start": "2026-04-17T17:00:00-00:00"
+    },
+    {
+        "event": "Jeddah",
+        "session": "FP3",
+        "start": "2026-04-18T13:30:00-00:00"
+    },
+    {
+        "event": "Jeddah",
+        "session": "Q",
+        "start": "2026-04-18T17:00:00-00:00"
+    },
+    {
+        "event": "Jeddah",
+        "session": "Grand Prix",
+        "start": "2026-04-19T17:00:00-00:00"
+    },
+    {
+        "event": "Miami",
+        "session": "FP1",
+        "start": "2026-05-01T16:30:00-00:00"
+    },
+    {
+        "event": "Miami",
+        "session": "SQ",
+        "start": "2026-05-01T20:30:00-00:00"
+    },
+    {
+        "event": "Miami",
+        "session": "Sprint",
+        "start": "2026-05-02T16:00:00-00:00"
+    },
+    {
+        "event": "Miami",
+        "session": "Q",
+        "start": "2026-05-02T20:00:00-00:00"
+    },
+    {
+        "event": "Miami",
+        "session": "Grand Prix",
+        "start": "2026-05-03T20:00:00-00:00"
+    },
+    {
+        "event": "Montreal",
+        "session": "FP1",
+        "start": "2026-05-22T16:30:00-00:00"
+    },
+    {
+        "event": "Montreal",
+        "session": "SQ",
+        "start": "2026-05-22T20:30:00-00:00"
+    },
+    {
+        "event": "Montreal",
+        "session": "Sprint",
+        "start": "2026-05-23T16:00:00-00:00"
+    },
+    {
+        "event": "Montreal",
+        "session": "Q",
+        "start": "2026-05-23T20:00:00-00:00"
+    },
+    {
+        "event": "Montreal",
+        "session": "Grand Prix",
+        "start": "2026-05-24T20:00:00-00:00"
+    },
+    {
+        "event": "Monaco",
+        "session": "FP1",
+        "start": "2026-06-05T11:30:00-00:00"
+    },
+    {
+        "event": "Monaco",
+        "session": "FP2",
+        "start": "2026-06-05T15:00:00-00:00"
+    },
+    {
+        "event": "Monaco",
+        "session": "FP3",
+        "start": "2026-06-06T10:30:00-00:00"
+    },
+    {
+        "event": "Monaco",
+        "session": "Q",
+        "start": "2026-06-06T14:00:00-00:00"
+    },
+    {
+        "event": "Monaco",
+        "session": "Grand Prix",
+        "start": "2026-06-07T13:00:00-00:00"
+    },
+    {
+        "event": "Barcelona Catalunya",
+        "session": "FP1",
+        "start": "2026-06-12T11:30:00-00:00"
+    },
+    {
+        "event": "Barcelona Catalunya",
+        "session": "FP2",
+        "start": "2026-06-12T15:00:00-00:00"
+    },
+    {
+        "event": "Barcelona Catalunya",
+        "session": "FP3",
+        "start": "2026-06-13T10:30:00-00:00"
+    },
+    {
+        "event": "Barcelona Catalunya",
+        "session": "Q",
+        "start": "2026-06-13T14:00:00-00:00"
+    },
+    {
+        "event": "Barcelona Catalunya",
+        "session": "Grand Prix",
+        "start": "2026-06-14T13:00:00-00:00"
+    },
+    {
+        "event": "Austria",
+        "session": "FP1",
+        "start": "2026-06-26T11:30:00-00:00"
+    },
+    {
+        "event": "Austria",
+        "session": "FP2",
+        "start": "2026-06-26T15:00:00-00:00"
+    },
+    {
+        "event": "Austria",
+        "session": "FP3",
+        "start": "2026-06-27T10:30:00-00:00"
+    },
+    {
+        "event": "Austria",
+        "session": "Q",
+        "start": "2026-06-27T14:00:00-00:00"
+    },
+    {
+        "event": "Austria",
+        "session": "Grand Prix",
+        "start": "2026-06-28T13:00:00-00:00"
+    },
+    {
+        "event": "Great Britain",
+        "session": "FP1",
+        "start": "2026-07-03T11:30:00-00:00"
+    },
+    {
+        "event": "Great Britain",
+        "session": "SQ",
+        "start": "2026-07-03T15:30:00-00:00"
+    },
+    {
+        "event": "Great Britain",
+        "session": "Sprint",
+        "start": "2026-07-04T11:00:00-00:00"
+    },
+    {
+        "event": "Great Britain",
+        "session": "Q",
+        "start": "2026-07-04T15:00:00-00:00"
+    },
+    {
+        "event": "Great Britain",
+        "session": "Grand Prix",
+        "start": "2026-07-05T14:00:00-00:00"
+    },
+    {
+        "event": "Belgium",
+        "session": "FP1",
+        "start": "2026-07-17T11:30:00-00:00"
+    },
+    {
+        "event": "Belgium",
+        "session": "FP2",
+        "start": "2026-07-17T15:00:00-00:00"
+    },
+    {
+        "event": "Belgium",
+        "session": "FP3",
+        "start": "2026-07-18T10:30:00-00:00"
+    },
+    {
+        "event": "Belgium",
+        "session": "Q",
+        "start": "2026-07-18T14:00:00-00:00"
+    },
+    {
+        "event": "Belgium",
+        "session": "Grand Prix",
+        "start": "2026-07-19T13:00:00-00:00"
+    },
+    {
+        "event": "Hungary",
+        "session": "FP1",
+        "start": "2026-07-24T11:30:00-00:00"
+    },
+    {
+        "event": "Hungary",
+        "session": "FP2",
+        "start": "2026-07-24T15:00:00-00:00"
+    },
+    {
+        "event": "Hungary",
+        "session": "FP3",
+        "start": "2026-07-25T10:30:00-00:00"
+    },
+    {
+        "event": "Hungary",
+        "session": "Q",
+        "start": "2026-07-25T14:00:00-00:00"
+    },
+    {
+        "event": "Hungary",
+        "session": "Grand Prix",
+        "start": "2026-07-26T13:00:00-00:00"
+    },
+    {
+        "event": "Netherlands",
+        "session": "FP1",
+        "start": "2026-08-21T10:30:00-00:00"
+    },
+    {
+        "event": "Netherlands",
+        "session": "SQ",
+        "start": "2026-08-21T14:30:00-00:00"
+    },
+    {
+        "event": "Netherlands",
+        "session": "Sprint",
+        "start": "2026-08-22T10:00:00-00:00"
+    },
+    {
+        "event": "Netherlands",
+        "session": "Q",
+        "start": "2026-08-22T14:00:00-00:00"
+    },
+    {
+        "event": "Netherlands",
+        "session": "Grand Prix",
+        "start": "2026-08-23T13:00:00-00:00"
+    },
+    {
+        "event": "Monza",
+        "session": "FP1",
+        "start": "2026-09-04T10:30:00-00:00"
+    },
+    {
+        "event": "Monza",
+        "session": "FP2",
+        "start": "2026-09-04T14:00:00-00:00"
+    },
+    {
+        "event": "Monza",
+        "session": "FP3",
+        "start": "2026-09-05T10:30:00-00:00"
+    },
+    {
+        "event": "Monza",
+        "session": "Q",
+        "start": "2026-09-05T14:00:00-00:00"
+    },
+    {
+        "event": "Monza",
+        "session": "Grand Prix",
+        "start": "2026-09-06T13:00:00-00:00"
+    },
+    {
+        "event": "Barcelona",
+        "session": "FP1",
+        "start": "2026-09-11T11:30:00-00:00"
+    },
+    {
+        "event": "Barcelona",
+        "session": "FP2",
+        "start": "2026-09-11T15:00:00-00:00"
+    },
+    {
+        "event": "Barcelona",
+        "session": "FP3",
+        "start": "2026-09-12T10:30:00-00:00"
+    },
+    {
+        "event": "Barcelona",
+        "session": "Q",
+        "start": "2026-09-12T14:00:00-00:00"
+    },
+    {
+        "event": "Barcelona",
+        "session": "Grand Prix",
+        "start": "2026-09-13T13:00:00-00:00"
+    },
+    {
+        "event": "Azerbaijan",
+        "session": "FP1",
+        "start": "2026-09-24T08:30:00-00:00"
+    },
+    {
+        "event": "Azerbaijan",
+        "session": "FP2",
+        "start": "2026-09-24T12:00:00-00:00"
+    },
+    {
+        "event": "Azerbaijan",
+        "session": "FP3",
+        "start": "2026-09-25T08:30:00-00:00"
+    },
+    {
+        "event": "Azerbaijan",
+        "session": "Q",
+        "start": "2026-09-25T12:00:00-00:00"
+    },
+    {
+        "event": "Azerbaijan",
+        "session": "Grand Prix",
+        "start": "2026-09-26T11:00:00-00:00"
+    },
+    {
+        "event": "Singapore",
+        "session": "FP1",
+        "start": "2026-10-09T08:30:00-00:00"
+    },
+    {
+        "event": "Singapore",
+        "session": "SQ",
+        "start": "2026-10-09T12:30:00-00:00"
+    },
+    {
+        "event": "Singapore",
+        "session": "Sprint",
+        "start": "2026-10-10T09:00:00-00:00"
+    },
+    {
+        "event": "Singapore",
+        "session": "Q",
+        "start": "2026-10-10T13:00:00-00:00"
+    },
+    {
+        "event": "Singapore",
+        "session": "Grand Prix",
+        "start": "2026-10-11T12:00:00-00:00"
+    },
+    {
+        "event": "Austin",
+        "session": "FP1",
+        "start": "2026-10-23T17:30:00-00:00"
+    },
+    {
+        "event": "Austin",
+        "session": "FP2",
+        "start": "2026-10-23T21:00:00-00:00"
+    },
+    {
+        "event": "Austin",
+        "session": "FP3",
+        "start": "2026-10-24T17:30:00-00:00"
+    },
+    {
+        "event": "Austin",
+        "session": "Q",
+        "start": "2026-10-24T21:00:00-00:00"
+    },
+    {
+        "event": "Austin",
+        "session": "Grand Prix",
+        "start": "2026-10-25T20:00:00-00:00"
+    },
+    {
+        "event": "Mexico",
+        "session": "FP1",
+        "start": "2026-10-30T18:30:00-00:00"
+    },
+    {
+        "event": "Mexico",
+        "session": "FP2",
+        "start": "2026-10-30T22:00:00-00:00"
+    },
+    {
+        "event": "Mexico",
+        "session": "FP3",
+        "start": "2026-10-31T17:30:00-00:00"
+    },
+    {
+        "event": "Mexico",
+        "session": "Q",
+        "start": "2026-10-31T21:00:00-00:00"
+    },
+    {
+        "event": "Mexico",
+        "session": "Grand Prix",
+        "start": "2026-11-01T20:00:00-00:00"
+    },
+    {
+        "event": "Brazil",
+        "session": "FP1",
+        "start": "2026-11-06T15:30:00-00:00"
+    },
+    {
+        "event": "Brazil",
+        "session": "FP2",
+        "start": "2026-11-06T19:00:00-00:00"
+    },
+    {
+        "event": "Brazil",
+        "session": "FP3",
+        "start": "2026-11-07T14:30:00-00:00"
+    },
+    {
+        "event": "Brazil",
+        "session": "Q",
+        "start": "2026-11-07T18:00:00-00:00"
+    },
+    {
+        "event": "Brazil",
+        "session": "Grand Prix",
+        "start": "2026-11-08T17:00:00-00:00"
+    },
+    {
+        "event": "Las Vegas",
+        "session": "FP1",
+        "start": "2026-11-20T00:30:00-00:00"
+    },
+    {
+        "event": "Las Vegas",
+        "session": "FP2",
+        "start": "2026-11-20T04:00:00-00:00"
+    },
+    {
+        "event": "Las Vegas",
+        "session": "FP3",
+        "start": "2026-11-21T00:30:00-00:00"
+    },
+    {
+        "event": "Las Vegas",
+        "session": "Q",
+        "start": "2026-11-21T04:00:00-00:00"
+    },
+    {
+        "event": "Las Vegas",
+        "session": "Grand Prix",
+        "start": "2026-11-22T04:00:00-00:00"
+    },
+    {
+        "event": "Qatar",
+        "session": "FP1",
+        "start": "2026-11-27T13:30:00-00:00"
+    },
+    {
+        "event": "Qatar",
+        "session": "FP2",
+        "start": "2026-11-27T17:00:00-00:00"
+    },
+    {
+        "event": "Qatar",
+        "session": "FP3",
+        "start": "2026-11-28T14:30:00-00:00"
+    },
+    {
+        "event": "Qatar",
+        "session": "Q",
+        "start": "2026-11-28T18:00:00-00:00"
+    },
+    {
+        "event": "Qatar",
+        "session": "Grand Prix",
+        "start": "2026-11-29T16:00:00-00:00"
+    },
+    {
+        "event": "Abu Dhabi",
+        "session": "FP1",
+        "start": "2026-12-04T09:30:00-00:00"
+    },
+    {
+        "event": "Abu Dhabi",
+        "session": "FP2",
+        "start": "2026-12-04T13:00:00-00:00"
+    },
+    {
+        "event": "Abu Dhabi",
+        "session": "FP3",
+        "start": "2026-12-05T10:30:00-00:00"
+    },
+    {
+        "event": "Abu Dhabi",
+        "session": "Q",
+        "start": "2026-12-05T14:00:00-00:00"
+    },
+    {
+        "event": "Abu Dhabi",
+        "session": "Grand Prix",
+        "start": "2026-12-06T13:00:00-00:00"
+    }
+]

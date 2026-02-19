@@ -1,0 +1,52 @@
+[
+    {
+        "team_name": "McLaren",
+        "place": "1",
+        "points": "833"
+    },
+    {
+        "team_name": "Mercedes",
+        "place": "2",
+        "points": "469"
+    },
+    {
+        "team_name": "Red Bull Racing",
+        "place": "3",
+        "points": "451"
+    },
+    {
+        "team_name": "Ferrari",
+        "place": "4",
+        "points": "398"
+    },
+    {
+        "team_name": "Williams",
+        "place": "5",
+        "points": "137"
+    },
+    {
+        "team_name": "Racing Bulls",
+        "place": "6",
+        "points": "92"
+    },
+    {
+        "team_name": "Aston Martin",
+        "place": "7",
+        "points": "89"
+    },
+    {
+        "team_name": "Haas F1 Team",
+        "place": "8",
+        "points": "79"
+    },
+    {
+        "team_name": "Kick Sauber",
+        "place": "9",
+        "points": "70"
+    },
+    {
+        "team_name": "Alpine",
+        "place": "10",
+        "points": "22"
+    }
+]
