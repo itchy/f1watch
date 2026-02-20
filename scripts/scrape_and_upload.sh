@@ -79,8 +79,13 @@ if [[ -z "$BUCKET" ]]; then
   exit 1
 fi
 
-if ! command -v python >/dev/null 2>&1; then
-  echo "Missing required command: python" >&2
+PYTHON_BIN=""
+if command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
+else
+  echo "Missing required command: python or python3" >&2
   exit 1
 fi
 
@@ -112,7 +117,7 @@ fi
 
 for module in "${SCRAPER_MODULES[@]}"; do
   echo "Executing ${module}"
-  if ! PYTHONPATH="src${PYTHONPATH:+:$PYTHONPATH}" python -m "$module" --year "$YEAR" --output-dir "."; then
+  if ! PYTHONPATH="src${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON_BIN" -m "$module" --year "$YEAR" --output-dir "."; then
     echo "Failed while running scraper module: ${module}" >&2
     exit 1
   fi
@@ -150,7 +155,11 @@ for file in "${OUTPUT_FILES[@]}"; do
     echo "[dry-run] aws ${AWS_ARGS[*]} s3 cp $file $target"
   else
     echo "Uploading $file -> $target"
-    aws "${AWS_ARGS[@]}" s3 cp "$file" "$target"
+    if [[ ${#AWS_ARGS[@]} -gt 0 ]]; then
+      aws "${AWS_ARGS[@]}" s3 cp "$file" "$target"
+    else
+      aws s3 cp "$file" "$target"
+    fi
   fi
 done
 

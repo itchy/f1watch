@@ -112,11 +112,19 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     return chosen
 
 
-def get_next_payload():
+def _resolve_tz_offset_hours(event) -> int:
+    params = (event or {}).get("queryStringParameters") or {}
+    offset = params.get("offset")
+    if offset is None:
+        return int(os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7"))
+    return int(offset)
+
+
+def get_next_payload(event=None):
     year = os.environ.get("F1_YEAR", "2026")
     data_source = os.environ.get("DATA_SOURCE", "auto").lower()
     bucket = os.environ.get("DATA_BUCKET")
-    tz_offset_hours = int(os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7"))
+    tz_offset_hours = _resolve_tz_offset_hours(event)
 
     sessions, teams, drivers = _load_inputs(year, data_source, bucket)
     return _build_next_payload(sessions, teams, drivers, tz_offset_hours)
@@ -124,11 +132,17 @@ def get_next_payload():
 
 def lambda_handler(event, context):
     try:
-        payload = get_next_payload()
+        payload = get_next_payload(event)
         return {
             "statusCode": 200,
             "headers": {"Content-Type": "application/json"},
             "body": json.dumps(payload),
+        }
+    except ValueError as exc:
+        return {
+            "statusCode": 400,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": str(exc)}),
         }
     except Exception as exc:
         return {
