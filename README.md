@@ -48,6 +48,14 @@ PYTHONPATH=src python -m f1watch.scrapers.schedule --year 2026
 Use:
 
 - `/Users/scott/code/f1/scripts/scrape_and_upload.sh`
+- `/Users/scott/code/f1/scripts/update_data.sh` (recommended; performs SSO login then scrape+upload)
+
+Quick update command:
+
+```bash
+cd /Users/scott/code/f1
+./scripts/update_data.sh
+```
 
 Example:
 
