@@ -73,6 +73,22 @@ Dry run:
 
 `lambda_handler` loads the 3 JSON files from S3 or local, computes the next session, and returns one JSON payload.
 
+API usage:
+
+- Method: `GET`
+- Path: `/`
+- Query param: `offset` (optional integer; timezone hours from UTC for `dow`/`dom`)
+
+Example:
+
+```bash
+curl "https://<your-lambda-url>.lambda-url.us-east-1.on.aws/?offset=-7"
+```
+
+OpenAPI spec:
+
+- `/Users/scott/code/f1/openapi.yaml`
+
 Environment variables:
 
 - `F1_YEAR` default `2026`

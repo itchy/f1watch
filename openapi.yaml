@@ -1,0 +1,92 @@
+openapi: 3.0.3
+info:
+  title: F1 Watch Next Session API
+  version: 1.0.0
+  description: Returns the next F1 session with standings snapshots and time helpers.
+servers:
+  - url: https://{lambda_url}
+    variables:
+      lambda_url:
+        default: your-lambda-url.lambda-url.us-east-1.on.aws
+paths:
+  /:
+    get:
+      summary: Get next F1 session payload
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          description: Timezone offset in hours from UTC for dow/dom fields.
+          schema:
+            type: integer
+            example: -7
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/NextSession'
+                  - $ref: '#/components/schemas/NoUpcomingSession'
+        '400':
+          description: Invalid request (for example non-integer offset)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server/internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    NextSession:
+      type: object
+      required:
+        - event
+        - session
+        - start
+        - dow
+        - dom
+        - delta
+      properties:
+        event:
+          type: string
+          example: Sakhir
+        session:
+          type: string
+          example: Day 3
+        start:
+          type: string
+          format: date-time
+          example: '2026-02-20T07:00:00-00:00'
+        dow:
+          type: string
+          example: Fri
+        dom:
+          type: string
+          example: '20'
+        delta:
+          type: string
+          example: 6h 22m
+      additionalProperties:
+        type: string
+    NoUpcomingSession:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: No upcoming session found
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: invalid literal for int() with base 10
