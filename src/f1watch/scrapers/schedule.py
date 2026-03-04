@@ -1,5 +1,6 @@
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 import requests
@@ -76,21 +77,24 @@ def get_f1_event_details(year: int, url: str):
 
     details = []
     for row in ul.find_all("li"):
-        spans = row.find_all("span")
-        if len(spans) < 8:
-            continue
-        day = spans[1].text
-        month = MONTH_TO_NUM.get(spans[2].text)
-        if not month:
-            continue
-        start = spans[7].text.split(" - ")[0]
-        details.append(
-            {
-                "event": event,
-                "session": session_abr(spans[4].text),
-                "start": f"{year}-{month}-{day}T{start}:00-00:00",
-            }
-        )
+        try:
+            spans = row.find_all("span")
+            if len(spans) < 8:
+                continue
+            day = spans[1].text
+            month = MONTH_TO_NUM.get(spans[2].text)
+            if not month:
+                continue
+            start = spans[7].text.split(" - ")[0]
+            details.append(
+                {
+                    "event": event,
+                    "session": session_abr(spans[4].text),
+                    "start": f"{year}-{month}-{day}T{start}:00-00:00",
+                }
+            )
+        except (IndexError, AttributeError) as e:
+            print(f"Warning: skipping session row due to parse error: {e}")
     return details
 
 
@@ -106,7 +110,10 @@ def get_f1_schedule(year: int):
         href = row.get("href")
         if not href:
             continue
-        events.extend(get_f1_event_details(year, href))
+        try:
+            events.extend(get_f1_event_details(year, href))
+        except requests.exceptions.RequestException as e:
+            print(f"Warning: skipping event {href} due to request error: {e}")
 
     return sorted(events, key=lambda e: e["start"])
 
@@ -120,10 +127,22 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / f"{args.year}_schedule.json"
+    backup_file = output_file.with_suffix(".json.bak")
 
-    data = get_f1_schedule(args.year)
-    output_file.write_text(json.dumps(data, indent=4) + "\n", encoding="utf-8")
-    print(f"Wrote {output_file}")
+    if output_file.exists():
+        shutil.copy2(output_file, backup_file)
+        print(f"Backed up {output_file} to {backup_file}")
+
+    try:
+        data = get_f1_schedule(args.year)
+        output_file.write_text(json.dumps(data, indent=4) + "\n", encoding="utf-8")
+        print(f"Wrote {output_file}")
+    except Exception as e:
+        print(f"Error: {e}")
+        if backup_file.exists():
+            shutil.copy2(backup_file, output_file)
+            print(f"Restored {output_file} from backup")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
