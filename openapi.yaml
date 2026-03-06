@@ -16,17 +16,10 @@ paths:
         - name: tz
           in: query
           required: false
-          description: IANA timezone name for dow/dom fields (for example America/Los_Angeles). Takes precedence over offset.
+          description: IANA timezone name for dow/dom fields (for example America/Los_Angeles).
           schema:
             type: string
             example: America/Los_Angeles
-        - name: offset
-          in: query
-          required: false
-          description: Timezone offset in hours from UTC for dow/dom fields (used when tz is not provided).
-          schema:
-            type: integer
-            example: -7
       responses:
         '200':
           description: Successful response
@@ -37,7 +30,7 @@ paths:
                   - $ref: '#/components/schemas/NextSession'
                   - $ref: '#/components/schemas/NoUpcomingSession'
         '400':
-          description: Invalid request (for example non-integer offset or invalid tz)
+          description: Invalid request (for example invalid tz)
           content:
             application/json:
               schema:

@@ -173,17 +173,11 @@ def _build_next_payload(sessions, teams, drivers, local_tz, tz_label: str, reque
 
 def _resolve_local_tz(event):
     params = (event or {}).get("queryStringParameters") or {}
-    tz_name = params.get("tz")
-    if tz_name:
-        try:
-            return ZoneInfo(tz_name), tz_name
-        except ZoneInfoNotFoundError as exc:
-            raise ValueError(f"invalid tz: {tz_name}") from exc
-    offset = params.get("offset")
-    if offset is None:
-        offset = os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7")
-    offset_hours = int(offset)
-    return timezone(timedelta(hours=offset_hours)), f"UTC{offset_hours:+d}"
+    tz_name = params.get("tz") or os.environ.get("LOCAL_TZ", "America/Denver")
+    try:
+        return ZoneInfo(tz_name), tz_name
+    except ZoneInfoNotFoundError as exc:
+        raise ValueError(f"invalid tz: {tz_name}") from exc
 
 
 def get_next_payload(event=None):

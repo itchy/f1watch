@@ -77,14 +77,12 @@ API usage:
 
 - Method: `GET`
 - Path: `/`
-- Query params:
-  - `tz` (optional IANA timezone name, for example `America/Los_Angeles`; takes precedence)
-  - `offset` (optional integer; timezone hours from UTC for `dow`/`dom` when `tz` is not provided)
+- Query param: `tz` (optional IANA timezone name, for example `America/Los_Angeles`)
 
 Example:
 
 ```bash
-curl "https://f1.itchy7.com/?offset=-7"
+curl "https://f1.itchy7.com/"
 curl "https://f1.itchy7.com/?tz=America/Los_Angeles"
 ```
 
@@ -104,7 +102,7 @@ Environment variables:
 - `F1_YEAR` default `2026`
 - `DATA_SOURCE` values: `s3`, `local`, `auto` (default)
 - `DATA_BUCKET` required if `DATA_SOURCE=s3`
-- `LOCAL_TZ_OFFSET_HOURS` default `-7`
+- `LOCAL_TZ` default `America/Denver`
 
 Expected S3 keys:
 

@@ -46,7 +46,7 @@ class TestDataShape(unittest.TestCase):
             drivers,
             local_tz=ZoneInfo("UTC"),
             tz_label="UTC",
-            request_url="https://f1.itchy7.com/?offset=0",
+            request_url="https://f1.itchy7.com/?tz=UTC",
         )
 
         self.assertIsInstance(payload, dict)
@@ -85,43 +85,35 @@ class TestDataShape(unittest.TestCase):
         body = json.loads(response["body"])
         self.assertIsInstance(body, dict)
 
-    def test_query_param_offset_overrides_env(self):
-        old_offset = os.environ.get("LOCAL_TZ_OFFSET_HOURS")
+    def test_query_param_tz_overrides_env(self):
+        old_tz = os.environ.get("LOCAL_TZ")
         try:
-            os.environ["LOCAL_TZ_OFFSET_HOURS"] = "-7"
-            local_tz, tz_label = _resolve_local_tz({"queryStringParameters": {"offset": "2"}})
+            os.environ["LOCAL_TZ"] = "UTC"
+            local_tz, tz_label = _resolve_local_tz(
+                {"queryStringParameters": {"tz": "America/Los_Angeles"}}
+            )
         finally:
-            if old_offset is None:
-                os.environ.pop("LOCAL_TZ_OFFSET_HOURS", None)
+            if old_tz is None:
+                os.environ.pop("LOCAL_TZ", None)
             else:
-                os.environ["LOCAL_TZ_OFFSET_HOURS"] = old_offset
+                os.environ["LOCAL_TZ"] = old_tz
 
-        self.assertEqual(local_tz.utcoffset(None).total_seconds(), 2 * 3600)
-        self.assertEqual(tz_label, "UTC+2")
+        self.assertEqual(getattr(local_tz, "key", None), "America/Los_Angeles")
+        self.assertEqual(tz_label, "America/Los_Angeles")
 
-    def test_query_param_tz_overrides_offset(self):
-        local_tz = _resolve_local_tz(
-            {"queryStringParameters": {"tz": "America/Los_Angeles", "offset": "2"}}
-        )
-        self.assertEqual(getattr(local_tz[0], "key", None), "America/Los_Angeles")
-
-    def test_invalid_offset_returns_400(self):
-        old_env = {
-            "DATA_SOURCE": os.environ.get("DATA_SOURCE"),
-            "F1_YEAR": os.environ.get("F1_YEAR"),
-        }
+    def test_env_local_tz_used_when_query_param_missing(self):
+        old_tz = os.environ.get("LOCAL_TZ")
         try:
-            os.environ["DATA_SOURCE"] = "local"
-            os.environ["F1_YEAR"] = "2026"
-            response = lambda_handler({"queryStringParameters": {"offset": "abc"}}, None)
+            os.environ["LOCAL_TZ"] = "America/New_York"
+            local_tz, tz_label = _resolve_local_tz({})
         finally:
-            for key, value in old_env.items():
-                if value is None:
-                    os.environ.pop(key, None)
-                else:
-                    os.environ[key] = value
+            if old_tz is None:
+                os.environ.pop("LOCAL_TZ", None)
+            else:
+                os.environ["LOCAL_TZ"] = old_tz
 
-        self.assertEqual(response["statusCode"], 400)
+        self.assertEqual(getattr(local_tz, "key", None), "America/New_York")
+        self.assertEqual(tz_label, "America/New_York")
 
     def test_invalid_tz_returns_400(self):
         old_env = {
