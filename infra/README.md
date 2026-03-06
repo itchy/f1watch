@@ -1,12 +1,16 @@
 # Terraform for F1 Watch
 
-This directory adds Infrastructure as Code for the existing Lambda API first, without forcing a rebuild of CloudFront/DNS on day one.
+This directory manages the current Lambda + API Gateway stack behind `f1.itchy7.com`.
 
 ## What is managed now
 
 - Lambda function: `next-f1-session`
 - Lambda Function URL
 - Public Function URL permission (`FunctionURLAllowPublicAccess`)
+- API Gateway HTTP API: `f1-next-session-api`
+- API Gateway integration/route/stage (`GET /`, `$default`)
+- API Gateway custom domain + mapping (`f1.itchy7.com`)
+- Lambda invoke permission for API Gateway
 - Optional second Lambda function: `next-pl-session`
 - Optional second Lambda Function URL + public URL permission
 - Lambda code packaging from:
@@ -30,6 +34,13 @@ terraform init
 terraform import aws_lambda_function.next_f1_session next-f1-session
 terraform import aws_lambda_function_url.next_f1_session next-f1-session
 terraform import aws_lambda_permission.function_url_public next-f1-session/FunctionURLAllowPublicAccess
+terraform import aws_apigatewayv2_api.f1_next_session rswa7d9iui
+terraform import aws_apigatewayv2_integration.f1_next_session_lambda rswa7d9iui/vngkyh6
+terraform import aws_apigatewayv2_route.f1_next_session_get_root rswa7d9iui/t11l2qk
+terraform import aws_apigatewayv2_stage.f1_next_session_default 'rswa7d9iui/$default'
+terraform import aws_apigatewayv2_domain_name.f1_custom_domain f1.itchy7.com
+terraform import aws_apigatewayv2_api_mapping.f1_custom_domain_root '99th9m/f1.itchy7.com'
+terraform import aws_lambda_permission.apigateway_invoke_next_f1_session next-f1-session/AllowApiGatewayInvokeNextF1Session
 terraform plan
 ```
 
@@ -53,6 +64,6 @@ This Terraform setup can create a second Lambda stack for a future Premier Leagu
 
 The current handler returns a template payload with short cache headers. Replace its data-loading logic with real PL fixtures/standings when ready.
 
-## CloudFront and DNS
+## CloudFront
 
-CloudFront (`f1.itchy7.com`) is intentionally read-only in this first pass, to avoid accidental replacement while bootstrapping IaC. After this Lambda layer is stable in Terraform state, we can add CloudFront and DNS resources and import them in a second pass.
+CloudFront is currently lookup-only in Terraform (`data.aws_cloudfront_distribution.f1_api`) and not yet fully managed as a mutable Terraform resource.

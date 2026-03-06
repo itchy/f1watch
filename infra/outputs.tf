@@ -10,6 +10,18 @@ output "lambda_function_url" {
   value = aws_lambda_function_url.next_f1_session.function_url
 }
 
+output "api_gateway_id" {
+  value = aws_apigatewayv2_api.f1_next_session.id
+}
+
+output "api_gateway_endpoint" {
+  value = aws_apigatewayv2_api.f1_next_session.api_endpoint
+}
+
+output "api_gateway_custom_domain_target" {
+  value = aws_apigatewayv2_domain_name.f1_custom_domain.domain_name_configuration[0].target_domain_name
+}
+
 output "cloudfront_domain_name" {
   value = data.aws_cloudfront_distribution.f1_api.domain_name
 }

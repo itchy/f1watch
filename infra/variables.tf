@@ -68,6 +68,24 @@ variable "cloudfront_distribution_id" {
   default     = "E5W6U8ERMNWNJ"
 }
 
+variable "api_name" {
+  description = "API Gateway HTTP API name for F1 payload."
+  type        = string
+  default     = "f1-next-session-api"
+}
+
+variable "api_custom_domain_name" {
+  description = "API Gateway custom domain used by CloudFront origin path."
+  type        = string
+  default     = "f1.itchy7.com"
+}
+
+variable "api_custom_domain_certificate_arn" {
+  description = "ACM certificate ARN for API Gateway custom domain."
+  type        = string
+  default     = "arn:aws:acm:us-east-1:373892137535:certificate/20d94070-f29c-4162-8ea1-480dc8e93438"
+}
+
 variable "enable_premier_league_lambda" {
   description = "Create a second Lambda + Function URL for Premier League data."
   type        = bool
