@@ -77,12 +77,15 @@ API usage:
 
 - Method: `GET`
 - Path: `/`
-- Query param: `offset` (optional integer; timezone hours from UTC for `dow`/`dom`)
+- Query params:
+  - `tz` (optional IANA timezone name, for example `America/Los_Angeles`; takes precedence)
+  - `offset` (optional integer; timezone hours from UTC for `dow`/`dom` when `tz` is not provided)
 
 Example:
 
 ```bash
 curl "https://f1.itchy7.com/?offset=-7"
+curl "https://f1.itchy7.com/?tz=America/Los_Angeles"
 ```
 
 OpenAPI spec:

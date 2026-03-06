@@ -4,6 +4,7 @@ import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -11,7 +12,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from f1watch.api.lambda_handler import (  # noqa: E402
     _build_next_payload,
-    _resolve_tz_offset_hours,
+    _resolve_local_tz,
     lambda_handler,
 )
 
@@ -38,7 +39,7 @@ class TestDataShape(unittest.TestCase):
             {"first_name": "Lando", "last_name": "Norris", "car_number": "4", "place": "1"}
         ]
 
-        payload = _build_next_payload(sessions, teams, drivers, tz_offset_hours=-7)
+        payload = _build_next_payload(sessions, teams, drivers, local_tz=ZoneInfo("UTC"))
 
         self.assertIsInstance(payload, dict)
         self.assertEqual(payload["event"], "Test")
@@ -74,14 +75,20 @@ class TestDataShape(unittest.TestCase):
         old_offset = os.environ.get("LOCAL_TZ_OFFSET_HOURS")
         try:
             os.environ["LOCAL_TZ_OFFSET_HOURS"] = "-7"
-            offset = _resolve_tz_offset_hours({"queryStringParameters": {"offset": "2"}})
+            local_tz = _resolve_local_tz({"queryStringParameters": {"offset": "2"}})
         finally:
             if old_offset is None:
                 os.environ.pop("LOCAL_TZ_OFFSET_HOURS", None)
             else:
                 os.environ["LOCAL_TZ_OFFSET_HOURS"] = old_offset
 
-        self.assertEqual(offset, 2)
+        self.assertEqual(local_tz.utcoffset(None).total_seconds(), 2 * 3600)
+
+    def test_query_param_tz_overrides_offset(self):
+        local_tz = _resolve_local_tz(
+            {"queryStringParameters": {"tz": "America/Los_Angeles", "offset": "2"}}
+        )
+        self.assertEqual(getattr(local_tz, "key", None), "America/Los_Angeles")
 
     def test_invalid_offset_returns_400(self):
         old_env = {
@@ -92,6 +99,24 @@ class TestDataShape(unittest.TestCase):
             os.environ["DATA_SOURCE"] = "local"
             os.environ["F1_YEAR"] = "2026"
             response = lambda_handler({"queryStringParameters": {"offset": "abc"}}, None)
+        finally:
+            for key, value in old_env.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+
+        self.assertEqual(response["statusCode"], 400)
+
+    def test_invalid_tz_returns_400(self):
+        old_env = {
+            "DATA_SOURCE": os.environ.get("DATA_SOURCE"),
+            "F1_YEAR": os.environ.get("F1_YEAR"),
+        }
+        try:
+            os.environ["DATA_SOURCE"] = "local"
+            os.environ["F1_YEAR"] = "2026"
+            response = lambda_handler({"queryStringParameters": {"tz": "Mars/Phobos"}}, None)
         finally:
             for key, value in old_env.items():
                 if value is None:

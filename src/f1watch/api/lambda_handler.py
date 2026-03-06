@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import boto3
 
@@ -85,7 +86,7 @@ def _session_live_window(session_name: str) -> timedelta:
     return timedelta(minutes=minutes)
 
 
-def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
+def _build_next_payload(sessions, teams, drivers, local_tz):
     now = datetime.now(timezone.utc)
 
     parsed_sessions = []
@@ -110,7 +111,7 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     if not chosen or not chosen_start:
         return {"error": "No upcoming session found"}
 
-    local_start = chosen_start + timedelta(hours=tz_offset_hours)
+    local_start = chosen_start.astimezone(local_tz)
     chosen["start"] = chosen_start.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     chosen["dow"] = local_start.strftime("%a")
     chosen["dom"] = str(local_start.day)
@@ -131,22 +132,28 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     return chosen
 
 
-def _resolve_tz_offset_hours(event) -> int:
+def _resolve_local_tz(event):
     params = (event or {}).get("queryStringParameters") or {}
+    tz_name = params.get("tz")
+    if tz_name:
+        try:
+            return ZoneInfo(tz_name)
+        except ZoneInfoNotFoundError as exc:
+            raise ValueError(f"invalid tz: {tz_name}") from exc
     offset = params.get("offset")
     if offset is None:
-        return int(os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7"))
-    return int(offset)
+        offset = os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7")
+    return timezone(timedelta(hours=int(offset)))
 
 
 def get_next_payload(event=None):
     year = os.environ.get("F1_YEAR", "2026")
     data_source = os.environ.get("DATA_SOURCE", "auto").lower()
     bucket = os.environ.get("DATA_BUCKET")
-    tz_offset_hours = _resolve_tz_offset_hours(event)
+    local_tz = _resolve_local_tz(event)
 
     sessions, teams, drivers = _load_inputs(year, data_source, bucket)
-    return _build_next_payload(sessions, teams, drivers, tz_offset_hours)
+    return _build_next_payload(sessions, teams, drivers, local_tz)
 
 
 def lambda_handler(event, context):
