@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -12,6 +12,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from f1watch.api.lambda_handler import (  # noqa: E402
     _build_next_payload,
+    _fallback_payload_from_last_good,
     _resolve_local_tz,
     _request_url,
     lambda_handler,
@@ -47,6 +48,7 @@ class TestDataShape(unittest.TestCase):
             local_tz=ZoneInfo("UTC"),
             tz_label="UTC",
             request_url="https://f1.itchy7.com/?tz=UTC",
+            data_last_updated=datetime.now(timezone.utc) - timedelta(minutes=5),
         )
 
         self.assertIsInstance(payload, dict)
@@ -63,6 +65,8 @@ class TestDataShape(unittest.TestCase):
         self.assertEqual(payload["constructors"][0]["place"], "1")
         self.assertEqual(payload["drivers"][0]["abbr"], "ln4")
         self.assertEqual(payload["drivers"][0]["place"], "1")
+        self.assertIn("data_age_seconds", payload["general"])
+        self.assertGreaterEqual(payload["general"]["data_age_seconds"], 0)
 
     def test_lambda_handler_returns_json_body(self):
         old_env = {
@@ -142,6 +146,38 @@ class TestDataShape(unittest.TestCase):
             }
         )
         self.assertEqual(url, "https://f1.itchy7.com/?tz=America%2FLos_Angeles")
+
+    def test_fallback_payload_from_last_good(self):
+        import f1watch.api.lambda_handler as handler_module  # noqa: E402
+
+        old_payload = handler_module.LAST_GOOD_PAYLOAD
+        old_generated = handler_module.LAST_GOOD_GENERATED_AT
+        try:
+            handler_module.LAST_GOOD_PAYLOAD = {
+                "general": {
+                    "source": "f1.itchy7.com",
+                    "request_url": "https://f1.itchy7.com/",
+                    "generated_at": "2026-03-06T00:00:00Z",
+                    "timezone": "America/Denver",
+                    "refresh": 60,
+                    "data_age_seconds": 1,
+                },
+                "schedule": {"event": "Test", "session": "FP1", "start": "2099-01-01T10:00:00Z"},
+                "drivers": [],
+                "constructors": [],
+            }
+            handler_module.LAST_GOOD_GENERATED_AT = datetime.now(timezone.utc) - timedelta(
+                seconds=10
+            )
+            payload = _fallback_payload_from_last_good(RuntimeError("boom"))
+        finally:
+            handler_module.LAST_GOOD_PAYLOAD = old_payload
+            handler_module.LAST_GOOD_GENERATED_AT = old_generated
+
+        self.assertIsNotNone(payload)
+        self.assertTrue(payload["general"]["using_last_good"])
+        self.assertEqual(payload["general"]["fallback_reason"], "boom")
+        self.assertGreaterEqual(payload["general"]["last_good_age_seconds"], 0)
 
 
 if __name__ == "__main__":

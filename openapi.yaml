@@ -58,6 +58,9 @@ components:
             - request_url
             - generated_at
             - timezone
+            - data_last_updated_at
+            - data_age_seconds
+            - using_last_good
             - refresh
           properties:
             source:
@@ -73,6 +76,22 @@ components:
             timezone:
               type: string
               example: America/Los_Angeles
+            data_last_updated_at:
+              type: string
+              format: date-time
+              example: '2026-03-06T15:10:00Z'
+            data_age_seconds:
+              type: integer
+              example: 309
+            using_last_good:
+              type: boolean
+              example: false
+            fallback_reason:
+              type: string
+              example: timed out loading source data
+            last_good_age_seconds:
+              type: integer
+              example: 12
             refresh:
               type: integer
               example: 60

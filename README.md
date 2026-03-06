@@ -88,7 +88,7 @@ curl "https://f1.itchy7.com/?tz=America/Los_Angeles"
 
 Response shape is organized into sections:
 
-- `general` (request metadata, generation timestamp, timezone, refresh)
+- `general` (request metadata, generation timestamp, timezone, `data_age_seconds`, refresh, fallback flags)
 - `schedule` (event/session/start/dow/dom/delta)
 - `drivers` (array of driver objects)
 - `constructors` (array of constructor objects)

@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -24,6 +25,9 @@ SESSION_LIVE_MINUTES = {
     "Chequered Flag": 240,
 }
 
+LAST_GOOD_PAYLOAD = None
+LAST_GOOD_GENERATED_AT = None
+
 
 def _parse_start(value: str):
     try:
@@ -34,12 +38,15 @@ def _parse_start(value: str):
 
 def _load_json_from_s3(s3_client, bucket: str, key: str):
     obj = s3_client.get_object(Bucket=bucket, Key=key)
-    return json.loads(obj["Body"].read())
+    return json.loads(obj["Body"].read()), obj["LastModified"].astimezone(timezone.utc)
 
 
 def _load_json_from_local(key: str):
-    with open(key, "r", encoding="utf-8") as file:
-        return json.load(file)
+    path = Path(key)
+    with path.open("r", encoding="utf-8") as file:
+        payload = json.load(file)
+    modified = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
+    return payload, modified
 
 
 def _load_inputs(year: str, data_source: str, bucket: str):
@@ -54,17 +61,16 @@ def _load_inputs(year: str, data_source: str, bucket: str):
         if not bucket:
             raise ValueError("DATA_BUCKET is required when DATA_SOURCE=s3")
         s3_client = boto3.client("s3")
-        return (
-            _load_json_from_s3(s3_client, bucket, keys["sessions"]),
-            _load_json_from_s3(s3_client, bucket, keys["teams"]),
-            _load_json_from_s3(s3_client, bucket, keys["drivers"]),
-        )
+        sessions, sessions_modified = _load_json_from_s3(s3_client, bucket, keys["sessions"])
+        teams, teams_modified = _load_json_from_s3(s3_client, bucket, keys["teams"])
+        drivers, drivers_modified = _load_json_from_s3(s3_client, bucket, keys["drivers"])
+    else:
+        sessions, sessions_modified = _load_json_from_local(keys["sessions"])
+        teams, teams_modified = _load_json_from_local(keys["teams"])
+        drivers, drivers_modified = _load_json_from_local(keys["drivers"])
 
-    return (
-        _load_json_from_local(keys["sessions"]),
-        _load_json_from_local(keys["teams"]),
-        _load_json_from_local(keys["drivers"]),
-    )
+    data_last_updated = max(sessions_modified, teams_modified, drivers_modified)
+    return sessions, teams, drivers, data_last_updated
 
 
 def _duration(tdelta: timedelta) -> str:
@@ -108,7 +114,15 @@ def _request_url(event) -> str:
     return f"https://{host}{path}"
 
 
-def _build_next_payload(sessions, teams, drivers, local_tz, tz_label: str, request_url: str):
+def _build_next_payload(
+    sessions,
+    teams,
+    drivers,
+    local_tz,
+    tz_label: str,
+    request_url: str,
+    data_last_updated: datetime,
+):
     now = datetime.now(timezone.utc)
 
     parsed_sessions = []
@@ -163,6 +177,9 @@ def _build_next_payload(sessions, teams, drivers, local_tz, tz_label: str, reque
             "request_url": request_url,
             "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "timezone": tz_label,
+            "data_last_updated_at": data_last_updated.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "data_age_seconds": max(0, int((now - data_last_updated).total_seconds())),
+            "using_last_good": False,
             "refresh": 60,
         },
         "schedule": schedule,
@@ -187,13 +204,34 @@ def get_next_payload(event=None):
     local_tz, tz_label = _resolve_local_tz(event)
     request_url = _request_url(event)
 
-    sessions, teams, drivers = _load_inputs(year, data_source, bucket)
-    return _build_next_payload(sessions, teams, drivers, local_tz, tz_label, request_url)
+    sessions, teams, drivers, data_last_updated = _load_inputs(year, data_source, bucket)
+    return _build_next_payload(
+        sessions, teams, drivers, local_tz, tz_label, request_url, data_last_updated
+    )
+
+
+def _fallback_payload_from_last_good(exc: Exception):
+    if LAST_GOOD_PAYLOAD is None or LAST_GOOD_GENERATED_AT is None:
+        return None
+    payload = json.loads(json.dumps(LAST_GOOD_PAYLOAD))
+    general = payload.setdefault("general", {})
+    now = datetime.now(timezone.utc)
+    general["generated_at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    general["using_last_good"] = True
+    general["fallback_reason"] = str(exc)
+    general["last_good_age_seconds"] = max(
+        0, int((now - LAST_GOOD_GENERATED_AT).total_seconds())
+    )
+    return payload
 
 
 def lambda_handler(event, context):
+    global LAST_GOOD_PAYLOAD
+    global LAST_GOOD_GENERATED_AT
     try:
         payload = get_next_payload(event)
+        LAST_GOOD_PAYLOAD = payload
+        LAST_GOOD_GENERATED_AT = datetime.now(timezone.utc)
         return {
             "statusCode": 200,
             "headers": {
@@ -209,6 +247,16 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": str(exc)}),
         }
     except Exception as exc:
+        fallback_payload = _fallback_payload_from_last_good(exc)
+        if fallback_payload is not None:
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Cache-Control": "public, max-age=0, s-maxage=30, stale-while-revalidate=30",
+                },
+                "body": json.dumps(fallback_payload),
+            }
         return {
             "statusCode": 500,
             "headers": {"Content-Type": "application/json"},
