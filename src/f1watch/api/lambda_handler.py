@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import boto3
@@ -86,7 +87,28 @@ def _session_live_window(session_name: str) -> timedelta:
     return timedelta(minutes=minutes)
 
 
-def _build_next_payload(sessions, teams, drivers, local_tz):
+def _driver_abbreviation(driver: dict) -> str:
+    return (
+        driver["first_name"].lower()[0]
+        + driver["last_name"].lower()[0]
+        + str(driver["car_number"])
+    )
+
+
+def _request_url(event) -> str:
+    event = event or {}
+    headers = event.get("headers") or {}
+    host = headers.get("x-forwarded-host") or headers.get("host") or "f1.itchy7.com"
+    path = event.get("rawPath") or "/"
+    raw_query = event.get("rawQueryString")
+    if raw_query is None:
+        raw_query = urlencode((event.get("queryStringParameters") or {}), doseq=True)
+    if raw_query:
+        return f"https://{host}{path}?{raw_query}"
+    return f"https://{host}{path}"
+
+
+def _build_next_payload(sessions, teams, drivers, local_tz, tz_label: str, request_url: str):
     now = datetime.now(timezone.utc)
 
     parsed_sessions = []
@@ -112,24 +134,41 @@ def _build_next_payload(sessions, teams, drivers, local_tz):
         return {"error": "No upcoming session found"}
 
     local_start = chosen_start.astimezone(local_tz)
-    chosen["start"] = chosen_start.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    chosen["dow"] = local_start.strftime("%a")
-    chosen["dom"] = str(local_start.day)
-    chosen["delta"] = _delta(chosen_start, now)
-    chosen["refresh"] = 60
+    schedule = {
+        "event": chosen.get("event"),
+        "session": chosen.get("session"),
+        "start": chosen_start.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "dow": local_start.strftime("%a"),
+        "dom": str(local_start.day),
+        "delta": _delta(chosen_start, now),
+    }
+    constructors = [
+        {"name": team["team_name"], "place": str(team["place"])}
+        for team in sorted(teams, key=lambda item: int(item["place"]))
+    ]
+    driver_rows = [
+        {
+            "abbr": _driver_abbreviation(driver),
+            "first_name": driver["first_name"],
+            "last_name": driver["last_name"],
+            "car_number": str(driver["car_number"]),
+            "place": str(driver["place"]),
+        }
+        for driver in sorted(drivers, key=lambda item: int(item["place"]))
+    ]
 
-    for team in teams:
-        chosen[team["team_name"].lower()] = str(team["place"])
-
-    for driver in drivers:
-        abr = (
-            driver["first_name"].lower()[0]
-            + driver["last_name"].lower()[0]
-            + str(driver["car_number"])
-        )
-        chosen[abr] = str(driver["place"])
-
-    return chosen
+    return {
+        "general": {
+            "source": "f1.itchy7.com",
+            "request_url": request_url,
+            "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timezone": tz_label,
+            "refresh": 60,
+        },
+        "schedule": schedule,
+        "drivers": driver_rows,
+        "constructors": constructors,
+    }
 
 
 def _resolve_local_tz(event):
@@ -137,23 +176,25 @@ def _resolve_local_tz(event):
     tz_name = params.get("tz")
     if tz_name:
         try:
-            return ZoneInfo(tz_name)
+            return ZoneInfo(tz_name), tz_name
         except ZoneInfoNotFoundError as exc:
             raise ValueError(f"invalid tz: {tz_name}") from exc
     offset = params.get("offset")
     if offset is None:
         offset = os.environ.get("LOCAL_TZ_OFFSET_HOURS", "-7")
-    return timezone(timedelta(hours=int(offset)))
+    offset_hours = int(offset)
+    return timezone(timedelta(hours=offset_hours)), f"UTC{offset_hours:+d}"
 
 
 def get_next_payload(event=None):
     year = os.environ.get("F1_YEAR", "2026")
     data_source = os.environ.get("DATA_SOURCE", "auto").lower()
     bucket = os.environ.get("DATA_BUCKET")
-    local_tz = _resolve_local_tz(event)
+    local_tz, tz_label = _resolve_local_tz(event)
+    request_url = _request_url(event)
 
     sessions, teams, drivers = _load_inputs(year, data_source, bucket)
-    return _build_next_payload(sessions, teams, drivers, local_tz)
+    return _build_next_payload(sessions, teams, drivers, local_tz, tz_label, request_url)
 
 
 def lambda_handler(event, context):

@@ -53,34 +53,105 @@ components:
     NextSession:
       type: object
       required:
-        - event
-        - session
-        - start
-        - dow
-        - dom
-        - delta
+        - general
+        - schedule
+        - drivers
+        - constructors
       properties:
-        event:
-          type: string
-          example: Sakhir
-        session:
-          type: string
-          example: Day 3
-        start:
-          type: string
-          format: date-time
-          example: '2026-02-20T07:00:00-00:00'
-        dow:
-          type: string
-          example: Fri
-        dom:
-          type: string
-          example: '20'
-        delta:
-          type: string
-          example: 6h 22m
-      additionalProperties:
-        type: string
+        general:
+          type: object
+          required:
+            - source
+            - request_url
+            - generated_at
+            - timezone
+            - refresh
+          properties:
+            source:
+              type: string
+              example: f1.itchy7.com
+            request_url:
+              type: string
+              example: https://f1.itchy7.com/?tz=America/Los_Angeles
+            generated_at:
+              type: string
+              format: date-time
+              example: '2026-03-06T15:15:02Z'
+            timezone:
+              type: string
+              example: America/Los_Angeles
+            refresh:
+              type: integer
+              example: 60
+        schedule:
+          type: object
+          required:
+            - event
+            - session
+            - start
+            - dow
+            - dom
+            - delta
+          properties:
+            event:
+              type: string
+              example: Melbourne
+            session:
+              type: string
+              example: FP3
+            start:
+              type: string
+              format: date-time
+              example: '2026-03-07T01:30:00Z'
+            dow:
+              type: string
+              example: Fri
+            dom:
+              type: string
+              example: '6'
+            delta:
+              type: string
+              example: 10h
+        drivers:
+          type: array
+          items:
+            type: object
+            required:
+              - abbr
+              - first_name
+              - last_name
+              - car_number
+              - place
+            properties:
+              abbr:
+                type: string
+                example: ln4
+              first_name:
+                type: string
+                example: Lando
+              last_name:
+                type: string
+                example: Norris
+              car_number:
+                type: string
+                example: '4'
+              place:
+                type: string
+                example: '1'
+        constructors:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - place
+            properties:
+              name:
+                type: string
+                example: McLaren
+              place:
+                type: string
+                example: '1'
     NoUpcomingSession:
       type: object
       required:

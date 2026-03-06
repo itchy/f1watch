@@ -88,6 +88,13 @@ curl "https://f1.itchy7.com/?offset=-7"
 curl "https://f1.itchy7.com/?tz=America/Los_Angeles"
 ```
 
+Response shape is organized into sections:
+
+- `general` (request metadata, generation timestamp, timezone, refresh)
+- `schedule` (event/session/start/dow/dom/delta)
+- `drivers` (array of driver objects)
+- `constructors` (array of constructor objects)
+
 OpenAPI spec:
 
 - `/Users/scott/code/f1/openapi.yaml`
