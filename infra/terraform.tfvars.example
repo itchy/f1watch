@@ -1,0 +1,10 @@
+aws_region = "us-east-1"
+aws_profile = "f1-sso"
+
+lambda_function_name = "next-f1-session"
+lambda_role_arn      = "arn:aws:iam::373892137535:role/service-role/next-f1-session-role-m81fwq00"
+cloudfront_distribution_id = "E5W6U8ERMNWNJ"
+
+lambda_environment = {
+  DATA_BUCKET = "f1-data-00000000"
+}

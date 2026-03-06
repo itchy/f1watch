@@ -24,3 +24,11 @@ env/
 
 # Local backup artifacts
 *.bak
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+infra/build/

@@ -110,6 +110,14 @@ Run:
 python -m unittest discover -s /Users/scott/code/f1/tests -p 'test_*.py'
 ```
 
+## Terraform (IaC)
+
+Terraform scaffolding for AWS resources is in:
+
+- `/Users/scott/code/f1/infra`
+
+Start with `/Users/scott/code/f1/infra/README.md` for import-first setup.
+
 ## Notes
 
 - Scraping is dependent on Formula1.com page markup and can break if selectors/classes change.
