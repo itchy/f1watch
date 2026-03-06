@@ -82,7 +82,7 @@ API usage:
 Example:
 
 ```bash
-curl "https://<your-lambda-url>.lambda-url.us-east-1.on.aws/?offset=-7"
+curl "https://f1.itchy7.com/?offset=-7"
 ```
 
 OpenAPI spec:
