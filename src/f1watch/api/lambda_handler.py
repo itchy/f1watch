@@ -53,20 +53,18 @@ def _load_inputs(year: str, data_source: str, bucket: str):
 
 
 def _duration(tdelta: timedelta) -> str:
-    days = tdelta.days
-    hours, rem = divmod(tdelta.seconds, 3600)
-    minutes, _ = divmod(rem, 60)
-    if days > 0:
-        return f"{days}d {hours}h"
-    if hours > 0:
-        return f"{hours}h {minutes}m"
-    return f"{minutes}m"
+    total_seconds = int(tdelta.total_seconds())
+    if total_seconds < 60:
+        return f"{total_seconds}s"
+    if total_seconds < 3600:
+        return f"{total_seconds // 60}m"
+    return f"{total_seconds // 3600}h"
 
 
 def _delta(start: datetime, now: datetime) -> str:
     if now < start:
         return _duration(start - now)
-    return "Live"
+    return "LIVE"
 
 
 def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
@@ -94,12 +92,14 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
         return {"error": "No upcoming session found"}
 
     local_start = chosen_start + timedelta(hours=tz_offset_hours)
+    chosen["start"] = chosen_start.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     chosen["dow"] = local_start.strftime("%a")
     chosen["dom"] = str(local_start.day)
     chosen["delta"] = _delta(chosen_start, now)
+    chosen["refresh"] = 60
 
     for team in teams:
-        chosen[team["team_name"].lower()] = team["place"]
+        chosen[team["team_name"].lower()] = str(team["place"])
 
     for driver in drivers:
         abr = (
@@ -107,7 +107,7 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
             + driver["last_name"].lower()[0]
             + str(driver["car_number"])
         )
-        chosen[abr] = driver["place"]
+        chosen[abr] = str(driver["place"])
 
     return chosen
 
