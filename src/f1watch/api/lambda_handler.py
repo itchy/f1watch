@@ -9,6 +9,19 @@ EVENT_NAME_MAP = {
     "Pre Season Testing 2": "Sakhir",
 }
 
+SESSION_LIVE_MINUTES = {
+    "FP1": 60,
+    "FP2": 60,
+    "FP3": 60,
+    "Q": 60,
+    "SQ": 60,
+    "Sprint": 60,
+    "Grand Prix": 120,
+    "Day 2": 240,
+    "Day 3": 240,
+    "Chequered Flag": 240,
+}
+
 
 def _parse_start(value: str):
     try:
@@ -67,6 +80,11 @@ def _delta(start: datetime, now: datetime) -> str:
     return "LIVE"
 
 
+def _session_live_window(session_name: str) -> timedelta:
+    minutes = SESSION_LIVE_MINUTES.get(session_name, 60)
+    return timedelta(minutes=minutes)
+
+
 def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     now = datetime.now(timezone.utc)
 
@@ -82,7 +100,8 @@ def _build_next_payload(sessions, teams, drivers, tz_offset_hours: int):
     chosen = None
     chosen_start = None
     for start, session in parsed_sessions:
-        if now - timedelta(hours=2) < start:
+        live_window = _session_live_window(session.get("session"))
+        if now <= start + live_window:
             chosen = dict(session)
             chosen["event"] = EVENT_NAME_MAP.get(chosen.get("event"), chosen.get("event"))
             chosen_start = start
