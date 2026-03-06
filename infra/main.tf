@@ -1,5 +1,5 @@
 locals {
-  lambda_zip_path = "${path.module}/build/${var.lambda_function_name}.zip"
+  lambda_zip_path = "${abspath(path.module)}/build/${var.lambda_function_name}.zip"
   lambda_sources = concat(
     ["${path.module}/../lambda_function.py"],
     [for file in fileset("${path.module}/../src", "**") : "${path.module}/../src/${file}"]
@@ -13,7 +13,7 @@ resource "terraform_data" "package_lambda" {
   ]
 
   provisioner "local-exec" {
-    command = "mkdir -p ${path.module}/build && rm -f ${local.lambda_zip_path} && cd ${path.module}/.. && zip -r ${local.lambda_zip_path} lambda_function.py src >/dev/null"
+    command = "mkdir -p ${abspath(path.module)}/build && rm -f ${local.lambda_zip_path} && cd ${abspath(path.module)}/.. && zip -r ${local.lambda_zip_path} lambda_function.py src >/dev/null"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_lambda_function" "next_f1_session" {
   layers        = var.lambda_layers
 
   filename         = local.lambda_zip_path
-  source_code_hash = filebase64sha256(local.lambda_zip_path)
+  source_code_hash = base64encode(local.lambda_source_hash)
 
   environment {
     variables = var.lambda_environment
@@ -51,4 +51,3 @@ resource "aws_lambda_permission" "function_url_public" {
   principal              = "*"
   function_url_auth_type = "NONE"
 }
-
