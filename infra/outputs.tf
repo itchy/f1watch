@@ -17,3 +17,15 @@ output "cloudfront_domain_name" {
 output "cloudfront_aliases" {
   value = data.aws_cloudfront_distribution.f1_api.aliases
 }
+
+output "pl_lambda_function_name" {
+  value = try(one(aws_lambda_function.premier_league[*].function_name), null)
+}
+
+output "pl_lambda_function_arn" {
+  value = try(one(aws_lambda_function.premier_league[*].arn), null)
+}
+
+output "pl_lambda_function_url" {
+  value = try(one(aws_lambda_function_url.premier_league[*].function_url), null)
+}
