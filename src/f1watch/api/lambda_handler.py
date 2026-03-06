@@ -154,7 +154,10 @@ def lambda_handler(event, context):
         payload = get_next_payload(event)
         return {
             "statusCode": 200,
-            "headers": {"Content-Type": "application/json"},
+            "headers": {
+                "Content-Type": "application/json",
+                "Cache-Control": "public, max-age=0, s-maxage=30, stale-while-revalidate=30",
+            },
             "body": json.dumps(payload),
         }
     except ValueError as exc:
