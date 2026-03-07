@@ -13,9 +13,12 @@ This directory manages the current Lambda + API Gateway stack behind `f1.itchy7.
 - Lambda invoke permission for API Gateway
 - Optional second Lambda function: `next-pl-session`
 - Optional second Lambda Function URL + public URL permission
+- Optional scrape/publish Lambda: `scrape-f1-data`
+- Optional hourly EventBridge rule that invokes `scrape-f1-data`
 - Lambda code packaging from:
   - `lambda_function.py`
   - `lambda_pl_function.py`
+  - `lambda_scrape_function.py`
   - `src/`
 - CloudFront distribution lookup as read-only data (for outputs/reference)
 
@@ -24,6 +27,7 @@ This directory manages the current Lambda + API Gateway stack behind `f1.itchy7.
 - Terraform `>= 1.6`
 - AWS credentials/profile (`f1-sso` by default)
 - `zip` command available locally
+- `python3` with `pip` (used to package scraper dependencies for `scrape-f1-data`)
 
 ## First-time setup (import existing resources)
 

@@ -57,6 +57,13 @@ cd /Users/scott/code/f1
 ./scripts/update_data.sh
 ```
 
+Automated hourly scrape/publish Lambda setup:
+
+```bash
+cd /Users/scott/code/f1
+./scripts/deploy_scrape_lambda.sh --profile f1-sso --year 2026 --bucket f1-data-00000000
+```
+
 Example:
 
 ```bash

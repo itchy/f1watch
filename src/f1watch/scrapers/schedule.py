@@ -85,11 +85,18 @@ def get_f1_event_details(year: int, url: str):
             month = MONTH_TO_NUM.get(spans[2].text)
             if not month:
                 continue
-            start = spans[7].text.split(" - ")[0]
+            session_name = ""
+            if len(spans) > 6 and spans[6].text.strip():
+                session_name = spans[6].text.strip()
+            elif len(spans) > 4:
+                session_name = spans[4].text.strip()
+
+            time_text = spans[7].text.strip() if len(spans) > 7 else ""
+            start = time_text.split(" - ")[0] if " - " in time_text else time_text
             details.append(
                 {
                     "event": event,
-                    "session": session_abr(spans[4].text),
+                    "session": session_abr(session_name),
                     "start": f"{year}-{month}-{day}T{start}:00-00:00",
                 }
             )

@@ -109,3 +109,48 @@ variable "pl_lambda_environment" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_scrape_publish_lambda" {
+  description = "Create scrape/publish Lambda and hourly EventBridge trigger."
+  type        = bool
+  default     = true
+}
+
+variable "scrape_lambda_function_name" {
+  description = "Scrape/publish Lambda function name."
+  type        = string
+  default     = "scrape-f1-data"
+}
+
+variable "scrape_lambda_handler" {
+  description = "Scrape/publish Lambda handler entrypoint."
+  type        = string
+  default     = "lambda_scrape_function.lambda_handler"
+}
+
+variable "scrape_lambda_timeout" {
+  description = "Scrape/publish Lambda timeout in seconds."
+  type        = number
+  default     = 180
+}
+
+variable "scrape_lambda_memory_size" {
+  description = "Scrape/publish Lambda memory in MB."
+  type        = number
+  default     = 512
+}
+
+variable "scrape_lambda_environment" {
+  description = "Scrape/publish Lambda environment variables."
+  type        = map(string)
+  default = {
+    DATA_BUCKET = "f1-data-00000000"
+    F1_YEAR     = "2026"
+  }
+}
+
+variable "scrape_schedule_expression" {
+  description = "EventBridge schedule expression for scrape/publish Lambda."
+  type        = string
+  default     = "rate(1 hour)"
+}

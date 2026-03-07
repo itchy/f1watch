@@ -41,3 +41,15 @@ output "pl_lambda_function_arn" {
 output "pl_lambda_function_url" {
   value = try(one(aws_lambda_function_url.premier_league[*].function_url), null)
 }
+
+output "scrape_lambda_function_name" {
+  value = try(one(aws_lambda_function.scrape_publish[*].function_name), null)
+}
+
+output "scrape_lambda_function_arn" {
+  value = try(one(aws_lambda_function.scrape_publish[*].arn), null)
+}
+
+output "scrape_lambda_schedule_rule" {
+  value = try(one(aws_cloudwatch_event_rule.scrape_publish_hourly[*].name), null)
+}
