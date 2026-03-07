@@ -3,6 +3,7 @@ aws_profile = "f1-sso"
 
 lambda_function_name = "next-f1-session"
 lambda_role_arn      = "arn:aws:iam::373892137535:role/service-role/next-f1-session-role-m81fwq00"
+lambda_timeout       = 10
 cloudfront_distribution_id = "E5W6U8ERMNWNJ"
 api_name = "f1-next-session-api"
 api_custom_domain_name = "f1.itchy7.com"
