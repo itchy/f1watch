@@ -13,12 +13,6 @@ lambda_environment = {
   DATA_BUCKET = "f1-data-00000000"
 }
 
-enable_premier_league_lambda = true
-pl_lambda_function_name      = "next-pl-session"
-pl_lambda_handler            = "lambda_pl_function.lambda_handler"
-
-pl_lambda_environment = {}
-
 enable_scrape_publish_lambda = true
 scrape_lambda_function_name  = "scrape-f1-data"
 scrape_lambda_handler        = "lambda_scrape_function.lambda_handler"

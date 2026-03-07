@@ -86,30 +86,6 @@ variable "api_custom_domain_certificate_arn" {
   default     = "arn:aws:acm:us-east-1:373892137535:certificate/20d94070-f29c-4162-8ea1-480dc8e93438"
 }
 
-variable "enable_premier_league_lambda" {
-  description = "Create a second Lambda + Function URL for Premier League data."
-  type        = bool
-  default     = true
-}
-
-variable "pl_lambda_function_name" {
-  description = "Premier League Lambda function name."
-  type        = string
-  default     = "next-pl-session"
-}
-
-variable "pl_lambda_handler" {
-  description = "Premier League Lambda handler entrypoint."
-  type        = string
-  default     = "lambda_pl_function.lambda_handler"
-}
-
-variable "pl_lambda_environment" {
-  description = "Premier League Lambda environment variables."
-  type        = map(string)
-  default     = {}
-}
-
 variable "enable_scrape_publish_lambda" {
   description = "Create scrape/publish Lambda and hourly EventBridge trigger."
   type        = bool
