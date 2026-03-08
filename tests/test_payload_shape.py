@@ -12,6 +12,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from f1watch.api.lambda_handler import (  # noqa: E402
     _build_next_payload,
+    _duration,
     _fallback_payload_from_last_good,
     _resolve_local_tz,
     _request_url,
@@ -20,6 +21,12 @@ from f1watch.api.lambda_handler import (  # noqa: E402
 
 
 class TestDataShape(unittest.TestCase):
+    def test_duration_formats_23h_as_hours(self):
+        self.assertEqual(_duration(timedelta(hours=23)), "23h")
+
+    def test_duration_formats_24h_as_days(self):
+        self.assertEqual(_duration(timedelta(hours=24)), "1d")
+
     def test_generated_schedule_timestamps_parse(self):
         schedule_path = REPO_ROOT / "2026_schedule.json"
         data = json.loads(schedule_path.read_text(encoding="utf-8"))
