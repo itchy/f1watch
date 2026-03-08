@@ -63,6 +63,8 @@ class TestDataShape(unittest.TestCase):
         self.assertIn("schedule", payload)
         self.assertIn("drivers", payload)
         self.assertIn("constructors", payload)
+        self.assertIn("selected_driver", payload)
+        self.assertIn("selected_constructor", payload)
         self.assertEqual(payload["schedule"]["event"], "Test")
         self.assertEqual(payload["schedule"]["session"], "FP1")
         self.assertIn("dow", payload["schedule"])
@@ -72,8 +74,36 @@ class TestDataShape(unittest.TestCase):
         self.assertEqual(payload["constructors"][0]["place"], "1")
         self.assertEqual(payload["drivers"][0]["abbr"], "ln4")
         self.assertEqual(payload["drivers"][0]["place"], "1")
+        self.assertIsNone(payload["selected_driver"])
+        self.assertIsNone(payload["selected_constructor"])
         self.assertIn("data_age_seconds", payload["general"])
         self.assertGreaterEqual(payload["general"]["data_age_seconds"], 0)
+
+    def test_payload_selection_fields_match_query_filters(self):
+        sessions = [{"event": "Test", "session": "FP1", "start": "2099-01-01T10:00:00-00:00"}]
+        teams = [
+            {"team_name": "McLaren", "place": "1"},
+            {"team_name": "Ferrari", "place": "2"},
+        ]
+        drivers = [
+            {"first_name": "Lando", "last_name": "Norris", "car_number": "4", "place": "1"},
+            {"first_name": "Lewis", "last_name": "Hamilton", "car_number": "44", "place": "2"},
+        ]
+
+        payload = _build_next_payload(
+            sessions,
+            teams,
+            drivers,
+            local_tz=ZoneInfo("UTC"),
+            tz_label="UTC",
+            request_url="https://f1.itchy7.com/?tz=UTC&team=mclaren&driver=ln4",
+            data_last_updated=datetime.now(timezone.utc) - timedelta(minutes=5),
+            team_filter="mclaren",
+            driver_filter="ln4",
+        )
+
+        self.assertEqual(payload["selected_constructor"]["name"], "McLaren")
+        self.assertEqual(payload["selected_driver"]["abbr"], "ln4")
 
     def test_lambda_handler_returns_json_body(self):
         old_env = {

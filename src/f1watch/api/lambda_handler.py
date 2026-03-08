@@ -29,6 +29,10 @@ LAST_GOOD_PAYLOAD = None
 LAST_GOOD_GENERATED_AT = None
 
 
+def _normalize_token(value: str) -> str:
+    return "".join(char for char in str(value).lower() if char.isalnum())
+
+
 def _parse_start(value: str):
     try:
         return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
@@ -116,6 +120,36 @@ def _request_url(event) -> str:
     return f"https://{host}{path}"
 
 
+def _query_params(event):
+    return (event or {}).get("queryStringParameters") or {}
+
+
+def _select_constructor(constructors, team_filter: str):
+    if not team_filter:
+        return None
+    target = _normalize_token(team_filter)
+    for constructor in constructors:
+        if _normalize_token(constructor.get("name", "")) == target:
+            return constructor
+    return None
+
+
+def _select_driver(driver_rows, driver_filter: str):
+    if not driver_filter:
+        return None
+    target = _normalize_token(driver_filter)
+    for driver in driver_rows:
+        tokens = (
+            driver.get("abbr", ""),
+            driver.get("car_number", ""),
+            f"{driver.get('first_name', '')}{driver.get('last_name', '')}",
+            driver.get("last_name", ""),
+        )
+        if any(_normalize_token(token) == target for token in tokens):
+            return driver
+    return None
+
+
 def _build_next_payload(
     sessions,
     teams,
@@ -124,6 +158,8 @@ def _build_next_payload(
     tz_label: str,
     request_url: str,
     data_last_updated: datetime,
+    team_filter: str | None = None,
+    driver_filter: str | None = None,
 ):
     now = datetime.now(timezone.utc)
 
@@ -187,11 +223,13 @@ def _build_next_payload(
         "schedule": schedule,
         "drivers": driver_rows,
         "constructors": constructors,
+        "selected_driver": _select_driver(driver_rows, driver_filter),
+        "selected_constructor": _select_constructor(constructors, team_filter),
     }
 
 
 def _resolve_local_tz(event):
-    params = (event or {}).get("queryStringParameters") or {}
+    params = _query_params(event)
     tz_name = params.get("tz") or os.environ.get("LOCAL_TZ", "America/Denver")
     try:
         return ZoneInfo(tz_name), tz_name
@@ -205,10 +243,21 @@ def get_next_payload(event=None):
     bucket = os.environ.get("DATA_BUCKET")
     local_tz, tz_label = _resolve_local_tz(event)
     request_url = _request_url(event)
+    params = _query_params(event)
+    team_filter = params.get("team")
+    driver_filter = params.get("driver")
 
     sessions, teams, drivers, data_last_updated = _load_inputs(year, data_source, bucket)
     return _build_next_payload(
-        sessions, teams, drivers, local_tz, tz_label, request_url, data_last_updated
+        sessions,
+        teams,
+        drivers,
+        local_tz,
+        tz_label,
+        request_url,
+        data_last_updated,
+        team_filter=team_filter,
+        driver_filter=driver_filter,
     )
 
 

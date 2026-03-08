@@ -20,6 +20,20 @@ paths:
           schema:
             type: string
             example: America/Los_Angeles
+        - name: team
+          in: query
+          required: false
+          description: Team selector. Case-insensitive team name match (for example mclaren or McLaren).
+          schema:
+            type: string
+            example: mclaren
+        - name: driver
+          in: query
+          required: false
+          description: Driver selector. Case-insensitive match by abbreviation, car number, full name, or last name.
+          schema:
+            type: string
+            example: ln4
       responses:
         '200':
           description: Successful response
@@ -50,6 +64,8 @@ components:
         - schedule
         - drivers
         - constructors
+        - selected_driver
+        - selected_constructor
       properties:
         general:
           type: object
@@ -164,6 +180,50 @@ components:
               place:
                 type: string
                 example: '1'
+        selected_driver:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Driver'
+        selected_constructor:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Constructor'
+    Driver:
+      type: object
+      required:
+        - abbr
+        - first_name
+        - last_name
+        - car_number
+        - place
+      properties:
+        abbr:
+          type: string
+          example: ln4
+        first_name:
+          type: string
+          example: Lando
+        last_name:
+          type: string
+          example: Norris
+        car_number:
+          type: string
+          example: '4'
+        place:
+          type: string
+          example: '1'
+    Constructor:
+      type: object
+      required:
+        - name
+        - place
+      properties:
+        name:
+          type: string
+          example: McLaren
+        place:
+          type: string
+          example: '1'
     NoUpcomingSession:
       type: object
       required:
