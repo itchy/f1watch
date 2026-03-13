@@ -27,6 +27,12 @@ class TestDataShape(unittest.TestCase):
     def test_duration_formats_24h_as_days(self):
         self.assertEqual(_duration(timedelta(hours=24)), "1d")
 
+    def test_duration_rounds_up_hours_for_sub_day_countdown(self):
+        self.assertEqual(_duration(timedelta(hours=5, minutes=20)), "6h")
+
+    def test_duration_formats_one_hour_as_60_minutes(self):
+        self.assertEqual(_duration(timedelta(hours=1)), "60m")
+
     def test_generated_schedule_timestamps_parse(self):
         schedule_path = REPO_ROOT / "2026_schedule.json"
         data = json.loads(schedule_path.read_text(encoding="utf-8"))

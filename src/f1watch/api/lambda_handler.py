@@ -1,4 +1,5 @@
 import json
+import math
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -81,11 +82,11 @@ def _duration(tdelta: timedelta) -> str:
     total_seconds = int(tdelta.total_seconds())
     if total_seconds < 60:
         return f"{total_seconds}s"
-    if total_seconds < 3600:
-        return f"{total_seconds // 60}m"
+    if total_seconds <= 3600:
+        return f"{math.ceil(total_seconds / 60)}m"
     if total_seconds >= 86400:
         return f"{total_seconds // 86400}d"
-    return f"{total_seconds // 3600}h"
+    return f"{math.ceil(total_seconds / 3600)}h"
 
 
 def _delta(start: datetime, now: datetime) -> str:
