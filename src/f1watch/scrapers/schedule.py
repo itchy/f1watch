@@ -5,6 +5,8 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 
 SESSION_ABR = {
@@ -56,6 +58,29 @@ MONTH_TO_NUM = {
 }
 
 
+def _http_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        backoff_factor=0.5,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def _find_session_list(soup: BeautifulSoup):
+    for ul in soup.find_all("ul"):
+        for row in ul.find_all("li"):
+            spans = row.find_all("span")
+            if len(spans) >= 8 and MONTH_TO_NUM.get(spans[2].text.strip()):
+                return ul
+    return None
+
+
 def session_abr(session_name: str) -> str:
     return SESSION_ABR.get(session_name, session_name)
 
@@ -65,15 +90,16 @@ def event_name(name: str) -> str:
     return EVENT_NAME_MAP.get(stripped, stripped)
 
 
-def get_f1_event_details(year: int, url: str):
+def get_f1_event_details(year: int, url: str, session: requests.Session | None = None):
+    http = session or _http_session()
     event = event_name(url.split("/")[-1].replace("-", " ").title())
-    response = requests.get(f"https://www.formula1.com{url}", timeout=20)
+    response = http.get(f"https://www.formula1.com{url}", timeout=20)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.content, "html.parser")
-    ul = soup.find("ul")
+    ul = _find_session_list(soup)
     if not ul:
-        return []
+        raise ValueError(f"No session list found for event page: {url}")
 
     details = []
     for row in ul.find_all("li"):
@@ -102,13 +128,17 @@ def get_f1_event_details(year: int, url: str):
             )
         except (IndexError, AttributeError) as e:
             print(f"Warning: skipping session row due to parse error: {e}")
+    if not details:
+        raise ValueError(f"No sessions parsed for event page: {url}")
     return details
 
 
 def get_f1_schedule(year: int):
     events = []
+    failed_events = []
+    http = _http_session()
 
-    response = requests.get(f"https://www.formula1.com/en/racing/{year}", timeout=20)
+    response = http.get(f"https://www.formula1.com/en/racing/{year}", timeout=20)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, "html.parser")
 
@@ -118,9 +148,12 @@ def get_f1_schedule(year: int):
         if not href:
             continue
         try:
-            events.extend(get_f1_event_details(year, href))
-        except requests.exceptions.RequestException as e:
-            print(f"Warning: skipping event {href} due to request error: {e}")
+            events.extend(get_f1_event_details(year, href, session=http))
+        except (requests.exceptions.RequestException, ValueError) as e:
+            failed_events.append(f"{href}: {e}")
+
+    if failed_events:
+        raise RuntimeError("Schedule scrape incomplete: " + "; ".join(failed_events))
 
     return sorted(events, key=lambda e: e["start"])
 
