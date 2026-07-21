@@ -84,8 +84,8 @@ def _duration(tdelta: timedelta) -> str:
         return f"{total_seconds}s"
     if total_seconds <= 3600:
         return f"{math.ceil(total_seconds / 60)}m"
-    if total_seconds >= 86400:
-        return f"{total_seconds // 86400}d"
+    if total_seconds > 86400:
+        return f"{math.ceil(total_seconds / 86400)}d"
     return f"{math.ceil(total_seconds / 3600)}h"
 
 

@@ -24,8 +24,14 @@ class TestDataShape(unittest.TestCase):
     def test_duration_formats_23h_as_hours(self):
         self.assertEqual(_duration(timedelta(hours=23)), "23h")
 
-    def test_duration_formats_24h_as_days(self):
-        self.assertEqual(_duration(timedelta(hours=24)), "1d")
+    def test_duration_formats_24h_as_hours(self):
+        self.assertEqual(_duration(timedelta(hours=24)), "24h")
+
+    def test_duration_formats_two_days_as_days(self):
+        self.assertEqual(_duration(timedelta(days=2)), "2d")
+
+    def test_duration_rounds_up_days_for_sub_range_countdown(self):
+        self.assertEqual(_duration(timedelta(days=1, hours=12)), "2d")
 
     def test_duration_rounds_up_hours_for_sub_day_countdown(self):
         self.assertEqual(_duration(timedelta(hours=5, minutes=20)), "6h")
